@@ -44,11 +44,17 @@ class TopicList(ListView):
 
         return data
 
+
 class TopicDetail(DetailView):
     model = Topic
     template_name = "faq/topic_detail.html"
     context_object_name = "topic"
     
+    def get_object(self, queryset=None):
+        topic = super(TopicDetail, self).get_object(queryset)
+        topic.add_view()
+        return topic
+
     def get_context_data(self, **kwargs):
         # Include a list of questions this user has access to. If the user is
         # logged in, this includes protected questions. Otherwise, not.
@@ -63,9 +69,15 @@ class TopicDetail(DetailView):
         })
         return data
 
+
 class QuestionDetail(DetailView):
     queryset = Question.site_objects.active()
     template_name = "faq/question_detail.html"
+
+    def get_object(self, queryset=None):
+        question = super(QuestionDetail, self).get_object(queryset)
+        question.add_view()
+        return question
     
     def get_queryset(self):        
         topic = get_object_or_404(Topic, slug=self.kwargs['topic_slug'])
@@ -79,6 +91,7 @@ class QuestionDetail(DetailView):
             qs = qs.exclude(protected=True)
         
         return qs
+
 
 class SubmitFAQ(CreateView):
     model = Question
@@ -108,6 +121,7 @@ class SubmitFAQ(CreateView):
             return self.success_url
         else:
             return reverse(self.success_view_name)
+
 
 class SubmitFAQThanks(TemplateView):
     template_name = "faq/submit_thanks.html"
