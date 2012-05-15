@@ -1,11 +1,20 @@
 from __future__ import absolute_import
 
 from django.contrib import admin
+from django.contrib.sites.models import Site
+
 from .models import Question, Topic
             
 class TopicAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('name',)}
     
+    def save_model(self, request, obj, form, change):
+        if not change and obj.site is None:
+            obj.site = Site.objects.get_current()
+
+        super(TopicAdmin, self).save_model(request, obj, form, change)
+
+
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ['text', 'sort_order', 'created_by', 'created_on',
                     'updated_by', 'updated_on', 'status']

@@ -1,18 +1,23 @@
 from __future__ import absolute_import
+
 from django.db.models import Max
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.generic import ListView, DetailView, TemplateView, CreateView
+
 from .models import Question, Topic
 from .forms import SubmitFAQForm
+
 
 class TopicList(ListView):
     model = Topic
     template_name = "faq/topic_list.html"
     allow_empty = True
     context_object_name = "topics"
+    queryset = Topic.site_objects.all()
 
     def get_context_data(self, **kwargs):
         data = super(TopicList, self).get_context_data(**kwargs)
@@ -23,7 +28,7 @@ class TopicList(ListView):
         #
         #   max(max(q.updated_on for q in topic.questions) for topic in topics)
         #
-        # Except performed in the DB, so quite a bit more efficiant.
+        # Except performed in the DB, so quite a bit more efficient.
         #
         # We can't just do Question.objects.all().aggregate(max('updated_on'))
         # because that'd prevent a subclass from changing the view's queryset
@@ -31,11 +36,12 @@ class TopicList(ListView):
         # as long as that model has a many-to-one to something called "questions"
         # with an "updated_on" field). So this magic is the price we pay for
         # being generic.
-        last_updated = (data['object_list']
-                            .annotate(updated=Max('questions__updated_on'))
-                            .aggregate(Max('updated')))
+
+        last_updated = data['object_list'].annotate(updated=Max('questions__updated_on'))\
+                                          .aggregate(Max('updated'))
         
-        data.update({'last_updated': last_updated['updated__max']})
+        data.update({ 'last_updated': last_updated['updated__max'] })
+
         return data
 
 class TopicDetail(DetailView):
@@ -58,7 +64,7 @@ class TopicDetail(DetailView):
         return data
 
 class QuestionDetail(DetailView):
-    queryset = Question.objects.active()
+    queryset = Question.site_objects.active()
     template_name = "faq/question_detail.html"
     
     def get_queryset(self):        

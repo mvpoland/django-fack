@@ -1,18 +1,25 @@
 import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
-from managers import QuestionManager
+
+from .managers import QuestionManager, SiteQuestionManager, SiteTopicManager
 
 class Topic(models.Model):
     """
     Generic Topics for FAQ question grouping
     """
+    site = models.ForeignKey(Site, null=True, blank=True)
     name = models.CharField(_('name'), max_length=150)
     slug = models.SlugField(_('slug'), max_length=150)
     sort_order = models.IntegerField(_('sort order'), default=0,
         help_text=_('The order you would like the topic to be displayed.'))
+
+    objects = models.Manager()
+    site_objects = SiteTopicManager()
 
     class Meta:
         verbose_name = _("Topic")
@@ -25,6 +32,7 @@ class Topic(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('faq_topic_detail', [self.slug])
+
 
 class Question(models.Model):
     HEADER = 2
@@ -60,6 +68,7 @@ class Question(models.Model):
         null=True, related_name="+")  
     
     objects = QuestionManager()
+    site_objects = SiteQuestionManager()
     
     class Meta:
         verbose_name = _("Frequent asked question")
