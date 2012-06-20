@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
 
+from .conf import STORAGE
 from .managers import QuestionManager, SiteQuestionManager, SiteTopicManager
 
 
@@ -19,6 +20,7 @@ class Topic(models.Model):
     sort_order = models.IntegerField(_('sort order'), default=0,
         help_text=_('The order you would like the topic to be displayed.'))
     nr_views = models.IntegerField(default=0)
+    icon = models.ImageField(upload_to='topic_icons/', storage=STORAGE, null=True, blank=True)
 
     objects = models.Manager()
     site_objects = SiteTopicManager()
