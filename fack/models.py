@@ -5,10 +5,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
+from tinymce import models as tinymce_models
 
 from .conf import STORAGE
 from .managers import QuestionManager, SiteQuestionManager, SiteTopicManager
-
 
 class Topic(models.Model):
     """
@@ -52,8 +52,8 @@ class Question(models.Model):
         (HEADER,    _('Group Header')),
     )
     
-    text = models.TextField(_('question'), help_text=_('The actual question itself.'))
-    answer = models.TextField(_('answer'), blank=True, help_text=_('The answer text.'))
+    text = tinymce_models.HTMLField(_('question'), help_text=_('The actual question itself.'))
+    answer = tinymce_models.HTMLField(_('answer'), blank=True, help_text=_('The answer text.'))
     topic = models.ForeignKey(Topic, verbose_name=_('topic'), related_name='questions')
     slug = models.SlugField(_('slug'), max_length=100)
     status = models.IntegerField(_('status'),
