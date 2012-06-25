@@ -52,7 +52,7 @@ class Question(models.Model):
         (HEADER,    _('Group Header')),
     )
     
-    text = tinymce_models.HTMLField(_('question'), help_text=_('The actual question itself.'))
+    text = models.TextField(_('question'), help_text=_('The actual question itself.'))
     answer = tinymce_models.HTMLField(_('answer'), blank=True, help_text=_('The answer text.'))
     topic = models.ForeignKey(Topic, verbose_name=_('topic'), related_name='questions')
     slug = models.SlugField(_('slug'), max_length=100)
