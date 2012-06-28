@@ -1,23 +1,33 @@
 import datetime
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
+from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
-from managers import QuestionManager
+
+from .conf import STORAGE
+from .managers import QuestionManager, SiteQuestionManager, SiteTopicManager
 
 class Topic(models.Model):
     """
     Generic Topics for FAQ question grouping
     """
+    site = models.ForeignKey(Site, null=True, blank=True)
     name = models.CharField(_('name'), max_length=150)
     slug = models.SlugField(_('slug'), max_length=150)
     sort_order = models.IntegerField(_('sort order'), default=0,
         help_text=_('The order you would like the topic to be displayed.'))
+    nr_views = models.IntegerField(default=0)
+    icon = models.ImageField(upload_to='topic_icons/', storage=STORAGE, null=True, blank=True)
+
+    objects = models.Manager()
+    site_objects = SiteTopicManager()
 
     class Meta:
         verbose_name = _("Topic")
         verbose_name_plural = _("Topics")
-        ordering = ['sort_order', 'name']
+        ordering = ['sort_order', 'nr_views', 'name']
 
     def __unicode__(self):
         return self.name
@@ -25,6 +35,11 @@ class Topic(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('faq_topic_detail', [self.slug])
+
+    def add_view(self):
+        self.nr_views += 1
+        self.save()
+
 
 class Question(models.Model):
     HEADER = 2
@@ -52,19 +67,21 @@ class Question(models.Model):
     sort_order = models.IntegerField(_('sort order'), default=0,
         help_text=_('The order you would like the question to be displayed.'))
 
-    created_on = models.DateTimeField(_('created on'), default=datetime.datetime.now)
-    updated_on = models.DateTimeField(_('updated on'))
+    created_on = models.DateTimeField(_('created on'), auto_now_add=True)
+    updated_on = models.DateTimeField(_('updated on'), auto_now=True)
     created_by = models.ForeignKey(User, verbose_name=_('created by'),
-        null=True, related_name="+")
+        null=True, blank=True, related_name="+")
     updated_by = models.ForeignKey(User, verbose_name=_('updated by'),
-        null=True, related_name="+")  
+        null=True, blank=True, related_name="+")
+    nr_views = models.IntegerField(default=0)
     
     objects = QuestionManager()
+    site_objects = SiteQuestionManager()
     
     class Meta:
         verbose_name = _("Frequent asked question")
         verbose_name_plural = _("Frequently asked questions")
-        ordering = ['sort_order', 'created_on']
+        ordering = ['sort_order', 'nr_views', 'created_on']
 
     def __unicode__(self):
         return self.text
@@ -96,4 +113,9 @@ class Question(models.Model):
 
     def is_active(self):
         return self.status == Question.ACTIVE
+
+    def add_view(self):
+        self.nr_views += 1
+        self.save()
+        self.topic.add_view()
 
