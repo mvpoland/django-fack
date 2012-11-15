@@ -7,13 +7,13 @@ class SiteTopicManager(models.Manager):
     def get_query_set(self):
         queryset = super(SiteTopicManager, self).get_query_set()
         site = Site.objects.get_current()
-        return queryset.filter(site=site)
+        return queryset.filter(site = site)
 
 
 class SiteQuestionManager(models.Manager):
     def get_query_set(self):
         site = Site.objects.get_current()
-        return QuestionQuerySet(self.model).filter(topic__site=site)
+        return QuestionQuerySet(self.model).filter(topic__site = site)
 
     def active(self):
         return self.get_query_set().active()
