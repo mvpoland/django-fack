@@ -7,3 +7,6 @@
 htmlcov/
 docs/_build
 dist/
+
+.idea
+.idea/*
