@@ -20,8 +20,8 @@ class Topic(models.Model):
     sort_order = models.IntegerField(_('sort order'), default=0,
         help_text=_('The order you would like the topic to be displayed.'))
     nr_views = models.IntegerField(default=0)
-    icon = models.ImageField(upload_to='topic_icons/', storage = STORAGE, null = True, blank = True)
-    country_code = models.CharField(max_length = 2, choices = COUNTRY_CHOICES, default = "BE")
+    icon = models.ImageField(upload_to='topic_icons/', storage=STORAGE, null=True, blank=True)
+    country_code = models.CharField(max_length = 2, choices=COUNTRY_CHOICES, default="BE")
 
     objects = models.Manager()
     site_objects = SiteTopicManager()
@@ -132,10 +132,10 @@ class QuestionScore(models.Model):
     """
 
     """
-    score = models.IntegerField(_("score"), choices = SCORE_CHOICES, default = 1)
-    question = models.ForeignKey(Question, null = False)
-    user = models.ForeignKey(User, null = True, blank = True, default = -1)
-    ip_address  = models.IPAddressField(_('IP address'), blank = True, null = True)
+    score = models.IntegerField(_("score"), choices=SCORE_CHOICES, default=1)
+    question = models.ForeignKey(Question, null=False)
+    user = models.ForeignKey(User, null=True, blank=True, default=-1)
+    ip_address = models.IPAddressField(_('IP address'), blank=True, null=True)
 
     def __unicode__(self):
         return self.question
