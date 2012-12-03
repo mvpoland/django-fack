@@ -8,7 +8,6 @@ from django.template.defaultfilters import slugify
 
 from .conf import STORAGE
 from .managers import QuestionManager, SiteQuestionManager, SiteTopicManager
-from fack.country import COUNTRY_CHOICES
 
 class Topic(models.Model):
     """
@@ -21,7 +20,6 @@ class Topic(models.Model):
         help_text=_('The order you would like the topic to be displayed.'))
     nr_views = models.IntegerField(default=0)
     icon = models.ImageField(upload_to='topic_icons/', storage=STORAGE, null=True, blank=True)
-    country_code = models.CharField(max_length = 2, choices=COUNTRY_CHOICES, default="BE")
 
     objects = models.Manager()
     site_objects = SiteTopicManager()
