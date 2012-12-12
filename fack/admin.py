@@ -7,6 +7,7 @@ from .models import Question, Topic
             
 
 class TopicAdmin(admin.ModelAdmin):
+    list_display = ['name', 'site']
     prepopulated_fields = {'slug':('name',)}
     
     def save_model(self, request, obj, form, change):
@@ -17,7 +18,7 @@ class TopicAdmin(admin.ModelAdmin):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['text', 'sort_order', 'created_by', 'created_on',
+    list_display = ['text', 'site', 'sort_order', 'created_by', 'created_on',
                     'updated_by', 'updated_on', 'status']
     list_editable = ['sort_order', 'status']
     raw_id_fields = ['created_by', 'updated_by']
@@ -37,7 +38,9 @@ class QuestionAdmin(admin.ModelAdmin):
 
         # Let the superclass do the final saving.
         super(QuestionAdmin, self).save_model(request, obj, form, change)
-        
+
+    def site(self, obj):
+        return '%s' % (obj.topic.site.name)
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Topic, TopicAdmin)
