@@ -1,9 +1,12 @@
 from __future__ import absolute_import
 
 from django import template
+from django.contrib.comments.models import Comment
+from django.contrib.contenttypes.models import ContentType
 from ..models import Question, Topic
 
 register = template.Library()
+
 
 class FaqListNode(template.Node):
     def __init__(self, num, varname, topic=None):
@@ -90,3 +93,15 @@ def faq_topic_list(parser, token):
 
     return TopicListNode(varname=args[2])
 
+
+@register.inclusion_tag('admin/fack/question/comments.html')
+def display_comments(obj):
+    """
+    Custom tag to fetch a list of comments for an object.
+
+    :param obj:
+    :return:
+    """
+    content_type = ContentType.objects.get_for_model(obj)
+    comments = Comment.objects.filter(content_type=content_type, object_pk=obj.pk)
+    return {'comments': comments}
