@@ -2,9 +2,9 @@
 
 {% for c in comments %}
 <blockquote>{{ c.comment }}<br> -- <i style="color:#999;">
-    {% if c.user %}User: {{ c.user }} - {% endif %}
-    {% if c.user_name %}Username: {{ c.user_name }} - {% endif %}
-    {% if c.user_email %}Email: {{ c.user_email }} - {% endif %}
-    {% if c.ip_address %}IP: {{ c.ip_address }} - {% endif %}
-    {% if c.submit_date %}Created: {{ c.submit_date }}{% endif %}</i></blockquote>
+    {% if c.user %}{% trans "User" %}: {{ c.user }} - {% endif %}
+    {% if c.user_name %}{% trans "Username" %}: {{ c.user_name }} - {% endif %}
+    {% if c.user_email %}{% trans "Email" %}: {{ c.user_email }} - {% endif %}
+    {% if c.ip_address %}{% trans "IP" %}: {{ c.ip_address }} - {% endif %}
+    {% if c.submit_date %}{% trans "Created" %}: {{ c.submit_date }}{% endif %}</i></blockquote>
 {% endfor %}
