@@ -99,9 +99,17 @@ def display_comments(obj):
     """
     Custom tag to fetch a list of comments for an object.
 
+    The call to `select_related` is performance boost.  In Django 1.5 you can use `prefetch_related` to narrow it down
+    to certain models.
+
+    https://docs.djangoproject.com/en/1.3/ref/models/querysets/#django.db.models.query.QuerySet.select_related
+    https://docs.djangoproject.com/en/1.5/ref/models/querysets/#django.db.models.query.QuerySet.prefetch_related
+
     :param obj:
     :return:
     """
     content_type = ContentType.objects.get_for_model(obj)
-    comments = Comment.objects.filter(content_type=content_type, object_pk=obj.pk)
+    comments = Comment.objects\
+        .select_related(depth=1)\
+        .filter(content_type=content_type, object_pk=obj.pk)
     return {'comments': comments}
