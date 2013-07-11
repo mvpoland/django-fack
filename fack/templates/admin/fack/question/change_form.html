@@ -4,9 +4,11 @@
 {% block after_field_sets %}
     {{ block.super }}
 
-    <h1>{% trans "Comments" %}</h1>
-    <fieldset class="module aligned">
-    {% display_comments original %}
-    </fieldset>
+    {% if original %}
+        <h1>{% trans "Comments" %}</h1>
+        <fieldset class="module aligned">
+        {% display_comments original %}
+        </fieldset>
+    {% endif %}
 {% endblock %}
 
