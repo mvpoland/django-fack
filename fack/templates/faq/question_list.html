@@ -1,0 +1,17 @@
+{% extends "faq/base.html" %}
+
+{% block title %}{{ block.super }}: Questions{% endblock %}
+
+{% block body %}
+<h1>Questions</h1>
+<ul>
+  {% for question in questions %}
+    <li><h3>{{ question.text }}</h3>
+        <ul>
+            <li> topic: {{ question.topic.name }}</li>
+            <li> score: {{ question.score }}</li>
+        </ul>
+    </li>
+  {% endfor %}
+</ul>
+{% endblock %}

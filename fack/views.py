@@ -1,15 +1,18 @@
 from __future__ import absolute_import
 
-from django.db.models import Max
+from django.db.models import Max, Sum, Count
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
-from django.views.generic import ListView, DetailView, TemplateView, CreateView
+from django.views.generic import View, ListView, DetailView, TemplateView, CreateView
+from django.http import HttpResponse
 
-from .models import Question, Topic
+from .models import Question, Topic, QuestionScore
 from .forms import SubmitFAQForm
+
+import json
 
 
 class TopicList(ListView):
@@ -70,6 +73,37 @@ class TopicDetail(DetailView):
         return data
 
 
+class QuestionOverviewList(ListView):
+    model = Question
+    template_name = "faq/question_list.html"
+    allow_empty = True
+    context_object_name = "questions"
+    queryset = Question.site_objects.all()
+
+    def get_context_data(self, **kwargs):
+        return self.get_question_score(**kwargs)
+
+    def get_question_score(self, **kwargs):
+        data = super(QuestionOverviewList, self).get_context_data(**kwargs)
+        questions = Question.site_objects.active().annotate(
+            nb_positive=Sum('questionscore__score'),
+            nb_all=Count('questionscore')
+        ).order_by('-topic__nr_views')
+
+        for question in questions:
+            if question.nb_all > 0:
+                percentage = (question.nb_positive or 0)*100.0 / question.nb_all
+                question.score = percentage
+            else:
+                question.score = "NA"
+
+        if kwargs.get('sort') == "score":
+            questions = sorted(questions, key=(lambda question: question.score), reverse=True)
+
+        data.update({'questions': questions})
+        return data
+
+
 class QuestionDetail(DetailView):
     queryset = Question.site_objects.active()
     template_name = "faq/question_detail.html"
@@ -125,3 +159,45 @@ class SubmitFAQ(CreateView):
 
 class SubmitFAQThanks(TemplateView):
     template_name = "faq/submit_thanks.html"
+
+
+class QuestionHelpfulVote(View):
+    def post(self, request, slug):
+        """
+        Scores a question.  The question can only be scored by 0 (not helpful) and 1 (helpful).  A user can score a question
+        only once.
+         - If the user is logged on we check if he already scored the question
+         - If the user is not logged on we check if the ip of the user already scored the question
+
+        :param request:
+        :return: a json response
+        """
+        question = Question.site_objects.filter(slug = slug)[0]
+        data = {}
+        user = request.user
+        ip_address = request.META.get('REMOTE_ADDR', '')
+
+        if user.is_authenticated():
+            qs_user = user
+            qs_done = True if len(QuestionScore.objects.filter(question = question, user = user))>0 else False
+        else:
+            qs_user = None
+            qs_done = True if len(QuestionScore.objects.filter(question = question, ip_address = ip_address, user = None))>0 else False
+
+
+        # optimistic positive score
+        if "n" == request.GET.get("q"):
+            qs_score = 0
+        else:
+            qs_score = 1
+
+        if not qs_done:
+            question_score = QuestionScore()
+            question_score.question = question
+            question_score.user = qs_user
+            question_score.score = qs_score
+            question_score.ip_address = ip_address
+            question_score.save()
+
+        return HttpResponse(json.dumps(data), mimetype='application/json')
+
