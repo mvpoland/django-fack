@@ -3,11 +3,11 @@ from __future__ import absolute_import
 from django.db.models import Max, Sum, Count
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.generic import View, ListView, DetailView, TemplateView, CreateView
 from django.http import HttpResponse
+from django.template.response import TemplateResponse
 
 from .models import Question, Topic, QuestionScore
 from .forms import SubmitFAQForm
@@ -201,3 +201,12 @@ class QuestionHelpfulVote(View):
 
         return HttpResponse(json.dumps(data), mimetype='application/json')
 
+
+class SearchView(View):
+    template_name = 'faq/search.html'
+
+    def get(self, request):
+        data = {
+            'questions': []
+        }
+        return TemplateResponse(request, self.template_name, data)
