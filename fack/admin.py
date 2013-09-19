@@ -9,9 +9,13 @@ from .models import Question, Topic, QuestionScore
 
 
 class TopicAdmin(admin.ModelAdmin):
-    list_display = ['name', 'site']
+    list_display = ['name', 'site', 'sort_order', 'updated_on', 'updated_by']
+    list_editable = ['sort_order']
+    list_per_page = 40
+    raw_id_fields = ['created_by', 'updated_by']
+    search_fields = ['name']
     prepopulated_fields = {'slug': ('name',)}
-    
+
     def save_model(self, request, obj, form, change):
         if not change and obj.site is None:
             obj.site = Site.objects.get_current()
@@ -20,12 +24,13 @@ class TopicAdmin(admin.ModelAdmin):
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display = ['text', 'site', 'sort_order', 'created_by', 'created_on',
+    list_display = ['text', 'topic', 'site', 'sort_order', 'created_by', 'created_on',
                     'updated_by', 'updated_on', 'status', 'useful', 'num_comments']
     list_editable = ['sort_order', 'status']
     raw_id_fields = ['created_by', 'updated_by']
-    list_filter = ('topic__site', 'status', )
-    list_per_page = 20
+    search_fields = ['text', 'answer']
+    list_filter = ('topic', 'topic__site', 'status', )
+    list_per_page = 40
 
     readonly_fields = ['useful', 'num_comments']
 
