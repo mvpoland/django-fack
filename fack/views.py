@@ -6,11 +6,12 @@ from django.contrib import messages
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.generic import View, ListView, DetailView, TemplateView, CreateView
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template.response import TemplateResponse
 
 from .models import Question, Topic, QuestionScore
 from .forms import SubmitFAQForm
+from .utils import search
 
 import json
 
@@ -205,8 +206,15 @@ class QuestionHelpfulVote(View):
 class SearchView(View):
     template_name = 'faq/search.html'
 
+    def __init__(self, **kwargs):
+        self.redirect_empty_view_name = kwargs.get('redirect_empty_view_name', 'fack.overview')
+        super(SearchView, self).__init__(**kwargs)
+
     def get(self, request):
-        data = {
-            'questions': []
-        }
+        query = request.GET.get("q", "").strip()
+        data = search(query)
+
+        if not data:
+            return HttpResponseRedirect(reverse(self.redirect_empty_view_name))
+
         return TemplateResponse(request, self.template_name, data)
