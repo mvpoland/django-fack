@@ -1,10 +1,10 @@
 from __future__ import absolute_import
 
+from django import forms
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
-
 from .models import Question, Topic, QuestionScore
 
 
@@ -23,7 +23,23 @@ class TopicAdmin(admin.ModelAdmin):
         super(TopicAdmin, self).save_model(request, obj, form, change)
 
 
+class TopicAdminForm(forms.ModelForm):
+    """
+    http://stackoverflow.com/questions/5414853/customize-select-in-django-admin
+    """
+    def __init__(self, *args, **kwargs):
+        super(TopicAdminForm, self).__init__(*args, **kwargs)
+        temp = {}
+        for topic in self.fields['topic'].queryset.order_by('site'):
+            if not topic.site.name in temp:
+                temp[topic.site.name] = []
+            temp[topic.site.name].append((topic.id, topic.name))
+        choices = [[k, v] for k, v in temp.iteritems()]
+        self.fields['topic'].choices = choices
+
+
 class QuestionAdmin(admin.ModelAdmin):
+    form = TopicAdminForm
     list_display = ['text', 'topic', 'site', 'sort_order', 'created_by', 'created_on',
                     'updated_by', 'updated_on', 'status', 'useful', 'num_comments']
     list_editable = ['sort_order', 'status']
@@ -91,6 +107,9 @@ class QuestionAdmin(admin.ModelAdmin):
 
     def site(self, obj):
         return '%s' % obj.topic.site.name
+
+    def topic(self, obj):
+        return "Buts"
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Topic, TopicAdmin)

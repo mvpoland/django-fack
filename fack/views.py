@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext as _
 from django.views.generic import View, ListView, DetailView, TemplateView, CreateView
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template.response import TemplateResponse
 
 from .models import Question, Topic, QuestionScore
@@ -112,11 +112,26 @@ class QuestionDetail(DetailView):
     queryset = Question.site_objects.active()
     template_name = "faq/question_detail.html"
 
+    def _allowed(self, question):
+        """
+        Allow authenticated admin users to preview a question
+
+        :param question:
+        :return:
+        """
+        print dir(self.request.user)
+        if question.is_active() or ('preview' in self.request.GET and self.request.user.is_staff):
+            return True
+
     def get_object(self, queryset=None):
         question = super(QuestionDetail, self).get_object(queryset)
-        question.add_view()
-        return question
-    
+
+        if self._allowed(question):
+            question.add_view()
+            return question
+
+        raise Http404('No question found')
+
     def get_queryset(self):
         topic = get_object_or_404(Topic, slug=self.kwargs['topic_slug'], site=Site.objects.get_current())
 
