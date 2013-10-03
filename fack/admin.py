@@ -108,9 +108,6 @@ class QuestionAdmin(admin.ModelAdmin):
     def site(self, obj):
         return '%s' % obj.topic.site.name
 
-    def topic(self, obj):
-        return "Buts"
-
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Topic, TopicAdmin)
 
