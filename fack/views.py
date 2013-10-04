@@ -109,6 +109,7 @@ class QuestionOverviewList(ListView):
 
 
 class QuestionDetail(DetailView):
+    is_preview = False
     queryset = Question.site_objects.active()
     template_name = "faq/question_detail.html"
 
@@ -119,8 +120,7 @@ class QuestionDetail(DetailView):
         :param question:
         :return:
         """
-        print dir(self.request.user)
-        if question.is_active() or ('preview' in self.request.GET and self.request.user.is_staff):
+        if question.is_active() or (self.is_preview and self.request.user.is_staff):
             return True
 
     def get_object(self, queryset=None):
@@ -199,7 +199,6 @@ class QuestionHelpfulVote(View):
         else:
             qs_user = None
             qs_done = True if len(QuestionScore.objects.filter(question = question, ip_address = ip_address, user = None))>0 else False
-
 
         # optimistic positive score
         if "n" == request.GET.get("q"):

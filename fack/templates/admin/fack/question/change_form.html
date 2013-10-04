@@ -5,9 +5,10 @@
     {{ block.super }}
 
     {% if original %}
-        <h1>{% trans "Comments" %}</h1>
-        <fieldset class="module aligned">
-        {% display_comments original %}
+        <h1>{% trans "Preview" %}</h1>
+        <fieldset class="module aligned" style="padding:10px">
+        {% url "fack.preview" original.topic.slug original.slug as question_preview %}
+        <a href="{{ question_preview }}" target="_blank">{{ question_preview }}</a>
         </fieldset>
     {% endif %}
 {% endblock %}
