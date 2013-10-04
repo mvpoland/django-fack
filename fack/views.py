@@ -109,7 +109,6 @@ class QuestionOverviewList(ListView):
 
 
 class QuestionDetail(DetailView):
-    is_preview = False
     queryset = Question.site_objects.active()
     template_name = "faq/question_detail.html"
 
@@ -120,7 +119,7 @@ class QuestionDetail(DetailView):
         :param question:
         :return:
         """
-        if question.is_active() or (self.is_preview and self.request.user.is_staff):
+        if question.is_active() or ('preview' in self.request.GET and self.request.user.is_staff):
             return True
 
     def get_object(self, queryset=None):
