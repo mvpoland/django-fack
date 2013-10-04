@@ -119,7 +119,6 @@ class QuestionDetail(DetailView):
         :param question:
         :return:
         """
-        print dir(self.request.user)
         if question.is_active() or ('preview' in self.request.GET and self.request.user.is_staff):
             return True
 
@@ -199,7 +198,6 @@ class QuestionHelpfulVote(View):
         else:
             qs_user = None
             qs_done = True if len(QuestionScore.objects.filter(question = question, ip_address = ip_address, user = None))>0 else False
-
 
         # optimistic positive score
         if "n" == request.GET.get("q"):
