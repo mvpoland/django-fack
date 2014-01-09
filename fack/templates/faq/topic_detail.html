@@ -1,5 +1,8 @@
 {% extends "faq/base.html" %}
 
+{% load url from future %}
+
+
 {% block title %}{{ block.super }}: {{ topic }}{% endblock %}
 
 {% block body %}
@@ -10,8 +13,8 @@
   <dd class="answer">{{ question.answer }}</dd>
   <p class="caption"> Was this question helpful?
     <span id="feedback-helpful">
-    <a href="{% url question_helpful question.slug %}?q=y" class="feedback-helpful" data="y">Yes</a> or
-    <a href="{% url question_helpful question.slug %}?q=n" class="feedback-helpful" data="n">No</a>
+    <a href="{% url 'question_helpful' question.slug %}?q=y" class="feedback-helpful" data="y">Yes</a> or
+    <a href="{% url 'question_helpful' question.slug %}?q=n" class="feedback-helpful" data="n">No</a>
     </span>
 </p>
 {% endfor %}
