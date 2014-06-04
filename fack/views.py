@@ -82,7 +82,6 @@ class QuestionOverviewList(ListView):
     template_name = "faq/question_list.html"
     allow_empty = True
     context_object_name = "questions"
-    queryset = Question.site_objects.all()
 
     def get_context_data(self, **kwargs):
         return self.get_question_score(**kwargs)
@@ -107,9 +106,11 @@ class QuestionOverviewList(ListView):
         data.update({'questions': questions})
         return data
 
+    def get_queryset(self):
+        return Question.site_objects.all()
+
 
 class QuestionDetail(DetailView):
-    queryset = Question.site_objects.active()
     template_name = "faq/question_detail.html"
 
     def _allowed(self, question):
