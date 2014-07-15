@@ -110,6 +110,5 @@ def display_comments(obj):
     """
     content_type = ContentType.objects.get_for_model(obj)
     comments = Comment.objects\
-        .select_related(depth=1)\
         .filter(content_type=content_type, object_pk=obj.pk)
     return {'comments': comments}
