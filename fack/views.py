@@ -25,8 +25,8 @@ class TopicList(ListView):
 
     def get_context_data(self, **kwargs):
         data = super(TopicList, self).get_context_data(**kwargs)
-        
-        # This slightly magical queryset grabs the latest update date for 
+
+        # This slightly magical queryset grabs the latest update date for
         # topic's questions, then the latest date for that whole group.
         # In other words, it's::
         #
@@ -43,7 +43,7 @@ class TopicList(ListView):
 
         last_updated = data['object_list'].annotate(updated=Max('questions__updated_on'))\
                                           .aggregate(Max('updated'))
-        
+
         data.update({'last_updated': last_updated['updated__max']})
 
         return data
@@ -56,7 +56,7 @@ class TopicDetail(DetailView):
     model = Topic
     template_name = "faq/topic_detail.html"
     context_object_name = "topic"
-    
+
     def get_object(self, queryset=None):
         topic = super(TopicDetail, self).get_object(queryset)
         topic.add_view()
@@ -147,7 +147,7 @@ class SubmitFAQ(CreateView):
     form_class = SubmitFAQForm
     template_name = "faq/submit_question.html"
     success_view_name = "faq_submit_thanks"
-    
+
     def get_form_kwargs(self):
         kwargs = super(SubmitFAQ, self).get_form_kwargs()
         kwargs['instance'] = Question()
@@ -157,12 +157,12 @@ class SubmitFAQ(CreateView):
 
     def form_valid(self, form):
         response = super(SubmitFAQ, self).form_valid(form)
-        messages.success(self.request, 
+        messages.success(self.request,
             _("Your question was submitted and will be reviewed by for inclusion in the FAQ."),
             fail_silently=True,
         )
         return response
-        
+
     def get_success_url(self):
         # The superclass version raises ImproperlyConfigered if self.success_url
         # isn't set. Instead of that, we'll try to redirect to a named view.
@@ -219,7 +219,7 @@ class QuestionHelpfulVote(View):
 
 class SearchView(View):
     template_name = 'faq/search.html'
-    redirect_empty_view_name = 'fack.overview'
+    redirect_empty_view_name = 'faq_question_list'
 
     def get(self, request):
         query = request.GET.get("q", "").strip()
