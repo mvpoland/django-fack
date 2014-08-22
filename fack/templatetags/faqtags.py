@@ -1,9 +1,15 @@
 from __future__ import absolute_import
 
 from django import template
-from django.contrib.comments.models import Comment
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from ..models import Question, Topic
+
+# verify if django-contrib-comments is installed
+has_comment = False
+if 'django.contrib.comments' in settings.INSTALLED_APPS:
+    from django.contrib.comments.models import Comment
+    has_comment = True
 
 register = template.Library()
 
@@ -20,14 +26,14 @@ class FaqListNode(template.Node):
             topic = self.topic.resolve(context) if self.topic else None
         except template.VariableDoesNotExist:
             return ''
-        
+
         if isinstance(topic, Topic):
             qs = Question.objects.filter(topic=topic)
         elif topic is not None:
             qs = Question.objects.filter(topic__slug=topic)
         else:
             qs = Question.objects.all()
-            
+
         context[self.varname] = qs.filter(status=Question.ACTIVE)[:num]
         return ''
 
@@ -36,9 +42,9 @@ def faqs_for_topic(parser, token):
     """
     Returns a list of 'count' faq's that belong to the given topic
     the supplied topic argument must be in the slug format 'topic-name'
-    
+
     Example usage::
-    
+
         {% faqs_for_topic 5 "my-slug" as faqs %}
     """
 
@@ -54,11 +60,11 @@ def faqs_for_topic(parser, token):
 @register.tag
 def faq_list(parser, token):
     """
-    returns a generic list of 'count' faq's to display in a list 
+    returns a generic list of 'count' faq's to display in a list
     ordered by the faq sort order.
 
     Example usage::
-    
+
         {% faq_list 15 as faqs %}
     """
     args = token.split_contents()
@@ -108,7 +114,11 @@ def display_comments(obj):
     :param obj:
     :return:
     """
-    content_type = ContentType.objects.get_for_model(obj)
-    comments = Comment.objects\
-        .filter(content_type=content_type, object_pk=obj.pk)
+
+    comments = None
+    if has_comment:
+        content_type = ContentType.objects.get_for_model(obj)
+        comments = Comment.objects\
+            .filter(content_type=content_type, object_pk=obj.pk)
+
     return {'comments': comments}

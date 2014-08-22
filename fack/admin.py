@@ -1,12 +1,17 @@
 from __future__ import absolute_import
 
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
-from django.contrib.comments.models import Comment
 from django.contrib.sites.models import Site
 from .models import Question, Topic, QuestionScore
 
+# verify if django-contrib-comments is installed
+has_comment = False
+if 'django.contrib.comments' in settings.INSTALLED_APPS:
+    from django.contrib.comments.models import Comment
+    has_comment = True
 
 class TopicAdmin(admin.ModelAdmin):
     list_display = ['name', 'site', 'sort_order', 'updated_on', 'updated_by']
@@ -41,14 +46,18 @@ class TopicAdminForm(forms.ModelForm):
 class QuestionAdmin(admin.ModelAdmin):
     form = TopicAdminForm
     list_display = ['text', 'topic', 'site', 'sort_order', 'created_by', 'created_on',
-                    'updated_by', 'updated_on', 'status', 'useful', 'num_comments']
+                    'updated_by', 'updated_on', 'status', 'useful']
     list_editable = ['sort_order', 'status']
     raw_id_fields = ['created_by', 'updated_by']
     search_fields = ['text', 'answer']
     list_filter = ('topic', 'topic__site', 'status', )
     list_per_page = 40
 
-    readonly_fields = ['useful', 'num_comments']
+    readonly_fields = ['useful']
+
+    if has_comment:
+        list_display.append('num_comments')
+        readonly_fields.append('num_comments')
 
     def useful(self, obj):
         """
@@ -83,22 +92,24 @@ class QuestionAdmin(admin.ModelAdmin):
         """
         Fetch all the comments for a Question and add them as a property, avoids useless queries to the database.
         """
-        if not hasattr(obj, '_comments'):
+        if not has_comment:
+            obj._comments = None
+        elif not hasattr(obj, '_comments'):
             content_type = ContentType.objects.get_for_model(obj)
             obj._comments = Comment.objects.filter(content_type=content_type, object_pk=obj.pk)
 
         return obj._comments
 
-    def save_model(self, request, obj, form, change): 
+    def save_model(self, request, obj, form, change):
         """
         Update created_by and updated_by fields.
-        
+
         The model layer updates the date fields, but has no access to the user.
         """
         # If the object is new, update the created_by field.
         if not change:
             obj.created_by = request.user
-        
+
         # Either way, update the updated_by field.
         obj.updated_by = request.user
 
