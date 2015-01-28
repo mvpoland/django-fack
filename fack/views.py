@@ -214,7 +214,7 @@ class QuestionHelpfulVote(View):
             question_score.ip_address = ip_address
             question_score.save()
 
-        return HttpResponse(json.dumps(data), mimetype='application/json')
+        return HttpResponse(json.dumps(data), content_type='application/json')
 
 
 class SearchView(View):
