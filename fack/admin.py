@@ -9,8 +9,8 @@ from .models import Question, Topic, QuestionScore
 
 # verify if django-contrib-comments is installed
 has_comment = False
-if 'django.contrib.comments' in settings.INSTALLED_APPS:
-    from django.contrib.comments.models import Comment
+if 'django_comments' in settings.INSTALLED_APPS:
+    from django_comments.models import Comment
     has_comment = True
 
 class TopicAdmin(admin.ModelAdmin):

@@ -1,108 +1,86 @@
-# encoding: utf-8
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
+from django.db import models, migrations
+from django.conf import settings
 import datetime
-from south.db import db
-from south.v2 import SchemaMigration
-from django.db import models
-
-class Migration(SchemaMigration):
-
-    def forwards(self, orm):
-        
-        # Adding model 'Topic'
-        db.create_table('fack_topic', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=150)),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=150, db_index=True)),
-            ('sort_order', self.gf('django.db.models.fields.IntegerField')(default=0)),
-        ))
-        db.send_create_signal('fack', ['Topic'])
-
-        # Adding model 'Question'
-        db.create_table('fack_question', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('text', self.gf('django.db.models.fields.TextField')()),
-            ('answer', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('topic', self.gf('django.db.models.fields.related.ForeignKey')(related_name='questions', to=orm['fack.Topic'])),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=100, db_index=True)),
-            ('status', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('protected', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('sort_order', self.gf('django.db.models.fields.IntegerField')(default=0)),
-            ('created_on', self.gf('django.db.models.fields.DateTimeField')(default=datetime.datetime.now)),
-            ('updated_on', self.gf('django.db.models.fields.DateTimeField')()),
-            ('created_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', null=True, to=orm['auth.User'])),
-            ('updated_by', self.gf('django.db.models.fields.related.ForeignKey')(related_name='+', null=True, to=orm['auth.User'])),
-        ))
-        db.send_create_signal('fack', ['Question'])
 
 
-    def backwards(self, orm):
-        
-        # Deleting model 'Topic'
-        db.delete_table('fack_topic')
+class Migration(migrations.Migration):
 
-        # Deleting model 'Question'
-        db.delete_table('fack_question')
+    dependencies = [
+        ('sites', '0001_initial'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+    ]
 
-
-    models = {
-        'auth.group': {
-            'Meta': {'object_name': 'Group'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '80'}),
-            'permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'})
-        },
-        'auth.permission': {
-            'Meta': {'ordering': "('content_type__app_label', 'content_type__model', 'codename')", 'unique_together': "(('content_type', 'codename'),)", 'object_name': 'Permission'},
-            'codename': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'content_type': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['contenttypes.ContentType']"}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
-        },
-        'auth.user': {
-            'Meta': {'object_name': 'User'},
-            'date_joined': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75', 'blank': 'True'}),
-            'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'groups': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Group']", 'symmetrical': 'False', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
-            'is_staff': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'is_superuser': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'last_login': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'blank': 'True'}),
-            'password': ('django.db.models.fields.CharField', [], {'max_length': '128'}),
-            'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
-        },
-        'contenttypes.contenttype': {
-            'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
-            'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
-        },
-        'fack.question': {
-            'Meta': {'ordering': "['sort_order', 'created_on']", 'object_name': 'Question'},
-            'answer': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
-            'created_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'null': 'True', 'to': "orm['auth.User']"}),
-            'created_on': ('django.db.models.fields.DateTimeField', [], {'default': 'datetime.datetime.now'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'protected': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '100', 'db_index': 'True'}),
-            'sort_order': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'status': ('django.db.models.fields.IntegerField', [], {'default': '0'}),
-            'text': ('django.db.models.fields.TextField', [], {}),
-            'topic': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'questions'", 'to': "orm['fack.Topic']"}),
-            'updated_by': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'+'", 'null': 'True', 'to': "orm['auth.User']"}),
-            'updated_on': ('django.db.models.fields.DateTimeField', [], {})
-        },
-        'fack.topic': {
-            'Meta': {'ordering': "['sort_order', 'name']", 'object_name': 'Topic'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '150'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'max_length': '150', 'db_index': 'True'}),
-            'sort_order': ('django.db.models.fields.IntegerField', [], {'default': '0'})
-        }
-    }
-
-    complete_apps = ['fack']
+    operations = [
+        migrations.CreateModel(
+            name='Question',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('text', models.TextField(help_text='The actual question itself.', verbose_name='question')),
+                ('answer', models.TextField(help_text='The answer text.', verbose_name='answer', blank=True)),
+                ('slug', models.SlugField(max_length=100, verbose_name='slug')),
+                ('status', models.IntegerField(default=0, help_text="Only questions with their status set to 'Active' will be displayed. Questions marked as 'Group Header' are treated as such by views and templates that are set up to use them.", verbose_name='status', choices=[(1, 'Active'), (0, 'Inactive'), (2, 'Group Header')])),
+                ('protected', models.BooleanField(default=False, help_text='Set true if this question is only visible by authenticated users.', verbose_name='is protected')),
+                ('sort_order', models.IntegerField(default=0, help_text='The order you would like the question to be displayed.', verbose_name='sort order')),
+                ('created_on', models.DateTimeField(auto_now_add=True, verbose_name='created on')),
+                ('updated_on', models.DateTimeField(auto_now=True, verbose_name='updated on')),
+                ('nr_views', models.IntegerField(default=0)),
+                ('created_by', models.ForeignKey(related_name='+', verbose_name='created by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'ordering': ['sort_order', 'nr_views', 'created_on'],
+                'verbose_name': 'Frequent asked question',
+                'verbose_name_plural': 'Frequently asked questions',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='QuestionScore',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('score', models.IntegerField(default=1, verbose_name='score', choices=[(0, b'No'), (1, b'Yes')])),
+                ('ip_address', models.IPAddressField(null=True, verbose_name='IP address', blank=True)),
+                ('question', models.ForeignKey(to='fack.Question')),
+                ('user', models.ForeignKey(default=-1, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Topic',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=150, verbose_name='name')),
+                ('slug', models.SlugField(max_length=150, verbose_name='slug')),
+                ('sort_order', models.IntegerField(default=0, help_text='The order you would like the topic to be displayed.', verbose_name='sort order')),
+                ('nr_views', models.IntegerField(default=0)),
+                ('icon', models.ImageField(null=True, upload_to=b'topic_icons/', blank=True)),
+                ('created_on', models.DateTimeField(default=datetime.datetime.now, verbose_name='created on', auto_now_add=True)),
+                ('updated_on', models.DateTimeField(default=datetime.datetime.now, verbose_name='updated on', auto_now=True)),
+                ('created_by', models.ForeignKey(related_name='+', verbose_name='created by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('site', models.ForeignKey(blank=True, to='sites.Site', null=True)),
+                ('updated_by', models.ForeignKey(related_name='+', verbose_name='updated by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+            ],
+            options={
+                'ordering': ['sort_order', 'nr_views', 'name'],
+                'verbose_name': 'Topic',
+                'verbose_name_plural': 'Topics',
+            },
+            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='question',
+            name='topic',
+            field=models.ForeignKey(related_name='questions', verbose_name='topic', to='fack.Topic'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='question',
+            name='updated_by',
+            field=models.ForeignKey(related_name='+', verbose_name='updated by', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            preserve_default=True,
+        ),
+    ]
