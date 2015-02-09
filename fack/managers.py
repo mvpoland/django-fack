@@ -4,19 +4,19 @@ from django.contrib.sites.models import Site
 
 
 class SiteTopicManager(models.Manager):
-    def get_query_set(self):
-        queryset = super(SiteTopicManager, self).get_query_set()
+    def get_queryset(self):
+        queryset = super(SiteTopicManager, self).get_queryset()
         site = Site.objects.get_current()
         return queryset.filter(site=site)
 
 
 class SiteQuestionManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         site = Site.objects.get_current()
         return QuestionQuerySet(self.model).filter(topic__site=site)
 
     def active(self):
-        return self.get_query_set().active()
+        return self.get_queryset().active()
 
 
 class QuestionQuerySet(QuerySet):
@@ -28,8 +28,8 @@ class QuestionQuerySet(QuerySet):
 
 
 class QuestionManager(models.Manager):
-    def get_query_set(self):
+    def get_queryset(self):
         return QuestionQuerySet(self.model)
 
     def active(self):
-        return self.get_query_set().active()
+        return self.get_queryset().active()
