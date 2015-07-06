@@ -21,8 +21,8 @@ class Topic(models.Model):
         help_text=_('The order you would like the topic to be displayed.'))
     nr_views = models.IntegerField(default=0)
     icon = models.ImageField(upload_to='topic_icons/', storage=STORAGE, null=True, blank=True)
-    created_on = models.DateTimeField(_('created on'), auto_now_add=True, default=datetime.datetime.now)
-    updated_on = models.DateTimeField(_('updated on'), auto_now=True, default=datetime.datetime.now)
+    created_on = models.DateTimeField(_('created on'), auto_now_add=True)
+    updated_on = models.DateTimeField(_('updated on'), auto_now=True)
     created_by = models.ForeignKey(User, verbose_name=_('created by'), null=True, blank=True, related_name="+")
     updated_by = models.ForeignKey(User, verbose_name=_('updated by'), null=True, blank=True, related_name="+")
 
