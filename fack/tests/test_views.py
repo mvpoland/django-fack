@@ -5,10 +5,11 @@ import django.test
 import mock
 import os
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from ..models import Topic, Question
 
+
 class FAQViewTests(django.test.TestCase):
-    urls = 'fack.urls'
     fixtures = ['faq_test_data.json']
 
     def setUp(self):
@@ -18,13 +19,13 @@ class FAQViewTests(django.test.TestCase):
 
     def tearDown(self):
         settings.TEMPLATE_DIRS = self._oldtd
-    
+
     def test_submit_faq_get(self):
         response = self.client.get('/submit/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/submit_question.html")
 
-    @mock.patch('django.contrib.messages')
+    @mock.patch('fack.views.messages')
     def test_submit_faq_post(self, mock_messages):
         data = {
             'topic': '1',
@@ -32,31 +33,31 @@ class FAQViewTests(django.test.TestCase):
             'answer': 'Blue. I mean red. I mean *AAAAHHHHH....*',
         }
         response = self.client.post('/submit/', data)
-        mock_messages.sucess.assert_called()
+        self.assertEqual(mock_messages.success.call_count, 1)
         self.assertRedirects(response, "/submit/thanks/")
         self.assert_(
             Question.objects.filter(text=data['text']).exists(),
             "Expected question object wasn't created."
         )
-        
+
     def test_submit_thanks(self):
         response = self.client.get('/submit/thanks/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/submit_thanks.html")
-    
+
     def test_faq_index(self):
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/topic_list.html")
-        self.assertQuerysetEqual(
-            response.context["topics"],
-            ["<Topic: Silly questions>", "<Topic: Serious questions>"]
-        )
+        topics = response.context["topics"]
+        self.assertEqual(2, len(topics))
+        self.assertEqual(topics[0].name, 'Serious questions')
+        self.assertEqual(topics[1].name, 'Silly questions')
         self.assertEqual(
             response.context['last_updated'],
             Question.objects.order_by('-updated_on')[0].updated_on
         )
-        
+
     def test_topic_detail(self):
         response = self.client.get('/silly-questions/')
         self.assertEqual(response.status_code, 200)
@@ -71,10 +72,10 @@ class FAQViewTests(django.test.TestCase):
         )
         self.assertQuerysetEqual(
             response.context["questions"],
-            ["<Question: What is your favorite color?>", 
+            ["<Question: What is your favorite color?>",
              "<Question: What is your quest?>"]
         )
-    
+
     def test_question_detail(self):
         response = self.client.get('/silly-questions/your-quest/')
         self.assertEqual(response.status_code, 200)
