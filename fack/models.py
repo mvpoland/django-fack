@@ -138,7 +138,8 @@ class QuestionScore(models.Model):
     score = models.IntegerField(_("score"), choices=SCORE_CHOICES, default=1)
     question = models.ForeignKey(Question, null=False)
     user = models.ForeignKey(User, null=True, blank=True, default=-1)
-    ip_address = models.IPAddressField(_('IP address'), blank=True, null=True)
+    ip_address = models.GenericIPAddressField(protocol='both', unpack_ipv4=False, verbose_name='IP address',
+                                              blank=True, null=True)
 
     def __unicode__(self):
         return self.question
