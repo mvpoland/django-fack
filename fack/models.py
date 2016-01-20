@@ -14,7 +14,7 @@ class Topic(models.Model):
     """
     Generic Topics for FAQ question grouping
     """
-    site = models.ForeignKey(Site, null=True, blank=True)
+    site = models.ForeignKey(Site, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(_('name'), max_length=150)
     slug = models.SlugField(_('slug'), max_length=150)
     sort_order = models.IntegerField(_('sort order'), default=0,
@@ -23,8 +23,10 @@ class Topic(models.Model):
     icon = models.ImageField(upload_to='topic_icons/', storage=STORAGE, null=True, blank=True)
     created_on = models.DateTimeField(_('created on'), auto_now_add=True)
     updated_on = models.DateTimeField(_('updated on'), auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('created by'), null=True, blank=True, related_name="+")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('updated by'), null=True, blank=True, related_name="+")
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('created by'),
+                                   null=True, blank=True, related_name="+")
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('updated by'),
+                                   null=True, blank=True, related_name="+")
 
     objects = models.Manager()
     site_objects = SiteTopicManager()
@@ -58,7 +60,7 @@ class Question(models.Model):
 
     text = models.TextField(_('question'), help_text=_('The actual question itself.'))
     answer = models.TextField(_('answer'), blank=True, help_text=_('The answer text.'))
-    topic = models.ForeignKey(Topic, verbose_name=_('topic'), related_name='questions')
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, verbose_name=_('topic'), related_name='questions')
     slug = models.SlugField(_('slug'), max_length=100)
     status = models.IntegerField(_('status'),
         choices=STATUS_CHOICES, default=INACTIVE,
@@ -74,9 +76,9 @@ class Question(models.Model):
 
     created_on = models.DateTimeField(_('created on'), auto_now_add=True)
     updated_on = models.DateTimeField(_('updated on'), auto_now=True)
-    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('created by'),
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('created by'),
         null=True, blank=True, related_name="+")
-    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, verbose_name=_('updated by'),
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_('updated by'),
         null=True, blank=True, related_name="+")
     nr_views = models.IntegerField(default=0)
 
@@ -136,8 +138,8 @@ class QuestionScore(models.Model):
 
     """
     score = models.IntegerField(_("score"), choices=SCORE_CHOICES, default=1)
-    question = models.ForeignKey(Question, null=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, default=-1)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, null=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True, blank=True, default=-1)
     ip_address = models.GenericIPAddressField(protocol='both', unpack_ipv4=False, verbose_name='IP address',
                                               blank=True, null=True)
 
