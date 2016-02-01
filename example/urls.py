@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^faq/', include('fack.urls')),
     
     # Everybody wants an admin to wind a piece of string around.
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', admin.site.urls),
 
     # Normally we'd do this if DEBUG only, but this is just an example app.
     url(regex  = r'^static/(?P<path>.*)$', 
