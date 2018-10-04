@@ -142,4 +142,4 @@ class QuestionScore(models.Model):
                                               blank=True, null=True)
 
     def __unicode__(self):
-        return self.question
+        return self.question.text
