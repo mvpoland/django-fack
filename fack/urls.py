@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from django.conf.urls import *
 from . import views
 
-urlpatterns=[
+urlpatterns = [
     url(
         regex=r'^$',
         view=views.TopicList.as_view(),

@@ -1,24 +1,25 @@
 import os
 from setuptools import setup, find_packages
 
+
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
-    name = 'django-fack',
-    version = '1.2.2',
-    description = 'A simple FAQ application for Django sites.',
-    long_description = read('README.rst'),
-    license = "BSD",
+    name='django-fack',
+    version='1.3.0',
+    description='A simple FAQ application for Django sites.',
+    long_description=read('README.rst'),
+    license="BSD",
 
-    author  ='Kevin Fricovsky',
-    author_email = 'kfricovsky@gmail.com',
-    url = 'http://django-fack.rtfd.org/',
+    author='Kevin Fricovsky',
+    author_email='kfricovsky@gmail.com',
+    url='http://django-fack.rtfd.org/',
 
-    packages = find_packages(exclude=['example']),
-    zip_safe = False,
+    packages=find_packages(exclude=['example']),
+    zip_safe=False,
 
-    classifiers = [
+    classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
         'Intended Audience :: Developers',
@@ -28,7 +29,7 @@ setup(
         'Framework :: Django',
     ],
 
-    install_requires = ['Django >= 1.3'],
-    test_suite = "fack._testrunner.runtests",
-    tests_require = ["mock"],
+    install_requires=['Django>=1.9,<1.10'],
+    test_suite="fack._testrunner.runtests",
+    tests_require=["mock"],
 )

@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import re
 from fack.models import Question
 from django.conf import settings
@@ -74,7 +75,7 @@ def search(search_query):
         Extract part of the first sentence of the text that contains one of
         the given words. If we don't find a match, use the first one.
         """
-        ellipsis = u"\u2026"
+        ellipsis = "\u2026"
         pattern = '|'.join(re.escape(w) for w in words)
         match = re.search(pattern, text, re.I)
 

@@ -13,6 +13,7 @@ if 'django_comments' in settings.INSTALLED_APPS:
     from django_comments.models import Comment
     has_comment = True
 
+
 class TopicAdmin(admin.ModelAdmin):
     list_display = ['name', 'site', 'sort_order', 'updated_on', 'updated_by']
     list_editable = ['sort_order']
@@ -68,7 +69,7 @@ class QuestionAdmin(admin.ModelAdmin):
         if total != 0:
             yes = self._get_scores(obj).filter(score=1).count()
             percentage = (float(yes) / float(total)) * 100
-            return "%.2f %% (%s)" % (percentage, total)
+            return "{:.2f} % ({})".format(percentage, total)
 
         # No scores yet
         return "NA"
@@ -117,7 +118,8 @@ class QuestionAdmin(admin.ModelAdmin):
         super(QuestionAdmin, self).save_model(request, obj, form, change)
 
     def site(self, obj):
-        return '%s' % obj.topic.site.name
+        return '{}'.format(obj.topic.site.name)
+
 
 admin.site.register(Question, QuestionAdmin)
 admin.site.register(Topic, TopicAdmin)

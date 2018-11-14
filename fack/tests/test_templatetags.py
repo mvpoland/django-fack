@@ -71,6 +71,7 @@ class FAQTagsSyntaxTests(TestCase):
                           faqtags.faq_list,
                           "faq_list 15 blahblah varname")
 
+
 class FAQTagsNodeTests(django.test.TestCase):
     """
     Tests for the node classes themselves, and hence the rendering functions.

@@ -14,8 +14,8 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     # Normally we'd do this if DEBUG only, but this is just an example app.
-    url(regex  = r'^static/(?P<path>.*)$', 
-        view   = 'django.views.static.serve',
-        kwargs = {'document_root': settings.MEDIA_ROOT}
+    url(regex=r'^static/(?P<path>.*)$',
+        view='django.views.static.serve',
+        kwargs={'document_root': settings.MEDIA_ROOT}
     ),
 )
