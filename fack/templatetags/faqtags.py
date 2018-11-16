@@ -37,6 +37,7 @@ class FaqListNode(template.Node):
         context[self.varname] = qs.filter(status=Question.ACTIVE)[:num]
         return ''
 
+
 @register.tag
 def faqs_for_topic(parser, token):
     """
@@ -82,6 +83,7 @@ class TopicListNode(template.Node):
     def render(self, context):
         context[self.varname] = Topic.objects.all()
         return ''
+
 
 @register.tag
 def faq_topic_list(parser, token):

@@ -21,9 +21,9 @@ from ..models import Question
 class FAQAdminTests(TestCase):
 
     def test_question_admin_save_model(self):
-        User = get_user_model()
-        user1 = mock.Mock(spec=User)
-        user2 = mock.Mock(spec=User)
+        user = get_user_model()
+        user1 = mock.Mock(spec=user)
+        user2 = mock.Mock(spec=user)
         req = mock.Mock(spec=HttpRequest)
         obj = mock.Mock(spec=Question)
         form = mock.Mock(spec=forms.Form)

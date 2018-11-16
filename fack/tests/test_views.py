@@ -1,11 +1,9 @@
 from __future__ import absolute_import
 
-import datetime
 import django.test
 import mock
 import os
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from ..models import Topic, Question
 
 
