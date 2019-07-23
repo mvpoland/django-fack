@@ -1,7 +1,7 @@
 from __future__ import absolute_import
 
 from django.db.models import Max, Sum, Count
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
@@ -66,7 +66,7 @@ class TopicDetail(DetailView):
         # Include a list of questions this user has access to. If the user is
         # logged in, this includes protected questions. Otherwise, not.
         qs = self.object.questions.active()
-        if self.request.user.is_anonymous():
+        if self.request.user.is_anonymous:
             qs = qs.exclude(protected=True)
 
         data = super(TopicDetail, self).get_context_data(**kwargs)
@@ -136,7 +136,7 @@ class QuestionDetail(DetailView):
         topic = get_object_or_404(Topic, slug=self.kwargs['topic_slug'], site=Site.objects.get_current())
 
         qs = Question.site_objects.filter(topic=topic)
-        if self.request.user.is_anonymous():
+        if self.request.user.is_anonymous:
             qs = qs.exclude(protected=True)
 
         return qs
@@ -151,7 +151,7 @@ class SubmitFAQ(CreateView):
     def get_form_kwargs(self):
         kwargs = super(SubmitFAQ, self).get_form_kwargs()
         kwargs['instance'] = Question()
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             kwargs['instance'].created_by = self.request.user
         return kwargs
 
@@ -193,7 +193,7 @@ class QuestionHelpfulVote(View):
         user = request.user
         ip_address = request.META.get('REMOTE_ADDR', '')
 
-        if user.is_authenticated():
+        if user.is_authenticated:
             qs_user = user
             qs_done = True if len(QuestionScore.objects.filter(question = question, user = user))>0 else False
         else:

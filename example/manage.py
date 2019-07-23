@@ -3,7 +3,7 @@
 import os
 import sys
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'example.settings'
 
 try:
     import fack
