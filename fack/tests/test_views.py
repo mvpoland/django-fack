@@ -4,7 +4,7 @@ import django.test
 import mock
 import os
 from django.conf import settings
-from ..models import Topic, Question
+from fack.models import Topic, Question
 
 
 class FAQViewTests(django.test.TestCase):
@@ -12,14 +12,18 @@ class FAQViewTests(django.test.TestCase):
 
     def setUp(self):
         # Make some test templates available.
-        self._oldtd = settings.TEMPLATE_DIRS
-        settings.TEMPLATE_DIRS = [os.path.join(os.path.dirname(__file__), 'templates')]
+        self._oldtd = settings.TEMPLATES[0]['DIRS']
+        settings.TEMPLATES[0]['DIRS'] = (
+                settings.TEMPLATES[0]['DIRS'] +
+                [os.path.join(os.path.dirname(__file__), 'templates')] +
+                [os.path.join(os.path.dirname(__file__), '..', 'templates')]
+        )
 
     def tearDown(self):
-        settings.TEMPLATE_DIRS = self._oldtd
+        settings.TEMPLATES[0]['DIRS'] = self._oldtd
 
     def test_submit_faq_get(self):
-        response = self.client.get('/submit/')
+        response = self.client.get('/faq/submit/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/submit_question.html")
 
@@ -30,21 +34,21 @@ class FAQViewTests(django.test.TestCase):
             'text': 'What is your favorite color?',
             'answer': 'Blue. I mean red. I mean *AAAAHHHHH....*',
         }
-        response = self.client.post('/submit/', data)
+        response = self.client.post('/faq/submit/', data)
         self.assertEqual(mock_messages.success.call_count, 1)
-        self.assertRedirects(response, "/submit/thanks/")
+        self.assertRedirects(response, "/faq/submit/thanks/")
         self.assert_(
             Question.objects.filter(text=data['text']).exists(),
             "Expected question object wasn't created."
         )
 
     def test_submit_thanks(self):
-        response = self.client.get('/submit/thanks/')
+        response = self.client.get('/faq/submit/thanks/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/submit_thanks.html")
 
     def test_faq_index(self):
-        response = self.client.get('/')
+        response = self.client.get('/faq/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/topic_list.html")
         topics = response.context["topics"]
@@ -57,7 +61,7 @@ class FAQViewTests(django.test.TestCase):
         )
 
     def test_topic_detail(self):
-        response = self.client.get('/silly-questions/')
+        response = self.client.get('/faq/silly-questions/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/topic_detail.html")
         self.assertEqual(
@@ -75,7 +79,7 @@ class FAQViewTests(django.test.TestCase):
         )
 
     def test_question_detail(self):
-        response = self.client.get('/silly-questions/your-quest/')
+        response = self.client.get('/faq/silly-questions/your-quest/')
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "faq/question_detail.html")
         self.assertEqual(

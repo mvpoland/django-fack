@@ -29,7 +29,5 @@ setup(
         'Framework :: Django',
     ],
 
-    install_requires=['Django>=1.9,<1.10'],
-    test_suite="fack._testrunner.runtests",
-    tests_require=["mock"],
+    install_requires=['Django>=1.10,<1.11'],
 )

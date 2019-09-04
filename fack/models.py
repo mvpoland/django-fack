@@ -2,6 +2,7 @@ import datetime
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.urls import reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
@@ -41,9 +42,8 @@ class Topic(models.Model):
     def __str__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('faq_topic_detail', [self.slug])
+        return reverse('faq_topic_detail', args=(self.slug,))
 
     def add_view(self):
         self.nr_views += 1
@@ -96,9 +96,8 @@ class Question(models.Model):
     def __str__(self):
         return self.text
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('faq_question_detail', [self.topic.slug, self.slug])
+        return reverse('faq_question_detail', args=(self.topic.slug, self.slug))
 
     def save(self, *args, **kwargs):
         # Set the date updated.
@@ -142,7 +141,7 @@ class QuestionScore(models.Model):
     """
     score = models.IntegerField(_("score"), choices=SCORE_CHOICES, default=1)
     question = models.ForeignKey(Question, null=False, on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, default=-1, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
     ip_address = models.GenericIPAddressField(protocol='both', unpack_ipv4=False, verbose_name='IP address',
                                               blank=True, null=True)
 
