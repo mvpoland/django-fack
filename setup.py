@@ -7,7 +7,7 @@ def read(fname):
 
 setup(
     name='django-fack',
-    version='1.3.0',
+    version='1.3.1',
     description='A simple FAQ application for Django sites.',
     long_description=read('README.rst'),
     license="BSD",
