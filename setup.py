@@ -1,13 +1,15 @@
 import os
 from setuptools import setup, find_packages
 
+import fack
+
 
 def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(
     name='django-fack',
-    version='1.3.1',
+    version=fack.__version__,
     description='A simple FAQ application for Django sites.',
     long_description=read('README.rst'),
     license="BSD",

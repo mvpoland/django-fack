@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
                 ('created_on', models.DateTimeField(auto_now_add=True, verbose_name='created on')),
                 ('updated_on', models.DateTimeField(auto_now=True, verbose_name='updated on')),
                 ('nr_views', models.IntegerField(default=0)),
-                ('created_by', models.ForeignKey(related_name='+', verbose_name='created by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(on_delete=models.deletion.CASCADE, related_name='+', verbose_name='created by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
                 'ordering': ['sort_order', 'nr_views', 'created_on'],
@@ -42,8 +42,8 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('score', models.IntegerField(default=1, verbose_name='score', choices=[(0, b'No'), (1, b'Yes')])),
                 ('ip_address', models.IPAddressField(null=True, verbose_name='IP address', blank=True)),
-                ('question', models.ForeignKey(to='fack.Question')),
-                ('user', models.ForeignKey(default=-1, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('question', models.ForeignKey(on_delete=models.deletion.CASCADE, to='fack.Question')),
+                ('user', models.ForeignKey(on_delete=models.deletion.CASCADE, default=-1, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
             },
@@ -60,9 +60,9 @@ class Migration(migrations.Migration):
                 ('icon', models.ImageField(null=True, upload_to=b'topic_icons/', blank=True)),
                 ('created_on', models.DateTimeField(default=datetime.datetime.now, verbose_name='created on', auto_now_add=True)),
                 ('updated_on', models.DateTimeField(default=datetime.datetime.now, verbose_name='updated on', auto_now=True)),
-                ('created_by', models.ForeignKey(related_name='+', verbose_name='created by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
-                ('site', models.ForeignKey(blank=True, to='sites.Site', null=True)),
-                ('updated_by', models.ForeignKey(related_name='+', verbose_name='updated by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('created_by', models.ForeignKey(on_delete=models.deletion.CASCADE, related_name='+', verbose_name='created by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
+                ('site', models.ForeignKey(on_delete=models.deletion.CASCADE, blank=True, to='sites.Site', null=True)),
+                ('updated_by', models.ForeignKey(on_delete=models.deletion.CASCADE, related_name='+', verbose_name='updated by', blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
             options={
                 'ordering': ['sort_order', 'nr_views', 'name'],
@@ -74,13 +74,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='question',
             name='topic',
-            field=models.ForeignKey(related_name='questions', verbose_name='topic', to='fack.Topic'),
+            field=models.ForeignKey(on_delete=models.deletion.CASCADE, related_name='questions', verbose_name='topic', to='fack.Topic'),
             preserve_default=True,
         ),
         migrations.AddField(
             model_name='question',
             name='updated_by',
-            field=models.ForeignKey(related_name='+', verbose_name='updated by', blank=True, to=settings.AUTH_USER_MODEL, null=True),
+            field=models.ForeignKey(on_delete=models.deletion.CASCADE, related_name='+', verbose_name='updated by', blank=True, to=settings.AUTH_USER_MODEL, null=True),
             preserve_default=True,
         ),
     ]
