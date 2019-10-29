@@ -31,5 +31,5 @@ setup(
         'Framework :: Django',
     ],
 
-    install_requires=['Django>=1.10,<1.11'],
+    install_requires=['Django>=1.10,<1.12'],
 )
