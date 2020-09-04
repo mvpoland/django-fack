@@ -1,3 +1,4 @@
+from builtins import object
 from datatrans.utils import register
 
 from fack.models import Topic, Question

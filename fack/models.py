@@ -1,3 +1,4 @@
+from builtins import object
 import datetime
 
 from django.db import models
@@ -34,7 +35,7 @@ class Topic(models.Model):
     objects = models.Manager()
     site_objects = SiteTopicManager()
 
-    class Meta:
+    class Meta(object):
         verbose_name = _("Topic")
         verbose_name_plural = _("Topics")
         ordering = ['sort_order', 'nr_views', 'name']
@@ -88,7 +89,7 @@ class Question(models.Model):
     objects = QuestionManager()
     site_objects = SiteQuestionManager()
 
-    class Meta:
+    class Meta(object):
         verbose_name = _("Frequent asked question")
         verbose_name_plural = _("Frequently asked questions")
         ordering = ['sort_order', 'nr_views', 'created_on']

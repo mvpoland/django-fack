@@ -27,7 +27,7 @@ __ http://django-fack.rtfd.org/
 Requirements
 ============
 
-Django 1.3+, Python 2.6+.
+Django 1.11+, Python 2.7+.
 
 Installation
 ============

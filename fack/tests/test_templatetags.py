@@ -21,7 +21,11 @@ class FAQTagsSyntaxTests(TestCase):
 
         Assumes the tag doesn't use the parser, so this won't work for block tags.
         """
-        t = template.Token(template.TOKEN_BLOCK, token_contents)
+        try:
+            token_block = template.TokenType.BLOCK
+        except AttributeError:
+            token_block = template.TOKEN_BLOCK
+        t = template.Token(token_block, token_contents)
         return tagfunc(None, t)
 
     def test_faqs_for_topic_compile(self):

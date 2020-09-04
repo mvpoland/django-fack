@@ -1,5 +1,13 @@
 [
   {
+    "model": "sites.site",
+    "pk": 1,
+    "fields": {
+      "domain": "test.site.pl",
+      "name": "test site"
+    }
+  },
+  {
     "pk": 1,
     "model": "auth.user",
     "fields": {
