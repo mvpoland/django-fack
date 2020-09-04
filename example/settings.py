@@ -10,7 +10,7 @@
 import os
 
 PROJECT_DIR = os.path.dirname(__file__)
-DEBUG = TEMPLATE_DEBUG = True
+DEBUG = True
 
 DATABASES = {
     'default': {
@@ -35,6 +35,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'django.template.context_processors.request',
+                'django.contrib.messages.context_processors.messages'
             ],
             'loaders': [
                 'django.template.loaders.filesystem.Loader',
@@ -48,6 +49,7 @@ TEMPLATES = [
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
+    'django.contrib.messages',
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',

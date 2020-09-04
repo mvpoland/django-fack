@@ -1,5 +1,7 @@
 from __future__ import absolute_import
+from __future__ import division
 
+from past.utils import old_div
 from django import forms
 from django.conf import settings
 from django.contrib import admin
@@ -40,7 +42,7 @@ class TopicAdminForm(forms.ModelForm):
             if not topic.site.name in temp:
                 temp[topic.site.name] = []
             temp[topic.site.name].append((topic.id, topic.name))
-        choices = [[k, v] for k, v in temp.iteritems()]
+        choices = [[k, v] for k, v in temp.items()]
         self.fields['topic'].choices = choices
 
 
@@ -68,7 +70,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
         if total != 0:
             yes = self._get_scores(obj).filter(score=1).count()
-            percentage = (float(yes) / float(total)) * 100
+            percentage = (old_div(float(yes), float(total))) * 100
             return "{:.2f} % ({})".format(percentage, total)
 
         # No scores yet
