@@ -1,13 +1,9 @@
-from __future__ import absolute_import
-from __future__ import division
-
-from past.utils import old_div
 from django import forms
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site
-from .models import Question, Topic, QuestionScore
+from fack.models import Question, Topic, QuestionScore
 
 # verify if django-contrib-comments is installed
 has_comment = False
@@ -70,7 +66,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
         if total != 0:
             yes = self._get_scores(obj).filter(score=1).count()
-            percentage = (old_div(float(yes), float(total))) * 100
+            percentage = (float(yes) / float(total)) * 100
             return "{:.2f} % ({})".format(percentage, total)
 
         # No scores yet

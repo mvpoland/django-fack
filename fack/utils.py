@@ -1,13 +1,9 @@
-from __future__ import unicode_literals
-from __future__ import division
-from past.utils import old_div
-from builtins import object
 import re
 from fack.models import Question
 from django.conf import settings
 
 
-class conf(object):
+class conf:
     """
     Special sub namespace to define some specific configurations for the help functionality
     """
@@ -83,8 +79,8 @@ def search(search_query):
         match = re.search(pattern, text, re.I)
 
         if match:
-            start = max(0, match.start() - old_div(context_len, 2))
-            end = min(len(text), match.end() + old_div(context_len, 2))
+            start = max(0, match.start() - context_len // 2)
+            end = min(len(text), match.end() + context_len // 2)
         else:
             start = 0
             end = context_len

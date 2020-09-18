@@ -1,18 +1,16 @@
-from __future__ import absolute_import
-
 from django.db.models import Max, Sum, Count
 from django.urls import reverse
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.shortcuts import get_object_or_404
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 from django.views.generic import View, ListView, DetailView, TemplateView, CreateView
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.template.response import TemplateResponse
 
-from .models import Question, Topic, QuestionScore
-from .forms import SubmitFAQForm
-from .utils import search
+from fack.models import Question, Topic, QuestionScore
+from fack.forms import SubmitFAQForm
+from fack.utils import search
 
 import json
 

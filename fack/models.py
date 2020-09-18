@@ -1,19 +1,16 @@
-from builtins import object
 import datetime
 
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
-from six import python_2_unicode_compatible
 
-from .conf import STORAGE
-from .managers import QuestionManager, SiteQuestionManager, SiteTopicManager
+from fack.conf import STORAGE
+from fack.managers import QuestionManager, SiteQuestionManager, SiteTopicManager
 
 
-@python_2_unicode_compatible
 class Topic(models.Model):
     """
     Generic Topics for FAQ question grouping
@@ -35,7 +32,7 @@ class Topic(models.Model):
     objects = models.Manager()
     site_objects = SiteTopicManager()
 
-    class Meta(object):
+    class Meta:
         verbose_name = _("Topic")
         verbose_name_plural = _("Topics")
         ordering = ['sort_order', 'nr_views', 'name']
@@ -51,7 +48,6 @@ class Topic(models.Model):
         self.save()
 
 
-@python_2_unicode_compatible
 class Question(models.Model):
     HEADER = 2
     ACTIVE = 1
@@ -89,7 +85,7 @@ class Question(models.Model):
     objects = QuestionManager()
     site_objects = SiteQuestionManager()
 
-    class Meta(object):
+    class Meta:
         verbose_name = _("Frequent asked question")
         verbose_name_plural = _("Frequently asked questions")
         ordering = ['sort_order', 'nr_views', 'created_on']

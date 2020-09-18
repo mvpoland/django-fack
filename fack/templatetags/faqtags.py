@@ -1,9 +1,7 @@
-from __future__ import absolute_import
-
 from django import template
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from ..models import Question, Topic
+from fack.models import Question, Topic
 
 # verify if django-contrib-comments is installed
 has_comment = False

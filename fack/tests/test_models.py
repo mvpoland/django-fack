@@ -1,9 +1,8 @@
-from __future__ import absolute_import
-
 import datetime
+
 import django.test
 from django.urls import reverse
-from ..models import Topic, Question
+from fack.models import Topic, Question
 
 
 class FAQModelTests(django.test.TestCase):
@@ -48,4 +47,3 @@ class FAQModelTests(django.test.TestCase):
 
         self.assertEqual(t_url, t_test_url)
         self.assertEqual(q_url, q_test_url)
-

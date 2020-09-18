@@ -1,4 +1,3 @@
-from builtins import object
 from datatrans.utils import register
 
 from fack.models import Topic, Question
@@ -9,14 +8,14 @@ from fack.models import Topic, Question
 ##
 
 
-class TopicTranslation(object):
+class TopicTranslation:
     fields = ('name',)
 
 
 register(Topic, TopicTranslation)
 
 
-class QuestionTranslation(object):
+class QuestionTranslation:
     fields = ('text', 'answer')
 
 

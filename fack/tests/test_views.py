@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import django.test
 import mock
 import os
@@ -37,7 +35,7 @@ class FAQViewTests(django.test.TestCase):
         response = self.client.post('/faq/submit/', data)
         self.assertEqual(mock_messages.success.call_count, 1)
         self.assertRedirects(response, "/faq/submit/thanks/")
-        self.assert_(
+        self.assertTrue(
             Question.objects.filter(text=data['text']).exists(),
             "Expected question object wasn't created."
         )
