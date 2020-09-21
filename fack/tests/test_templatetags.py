@@ -1,10 +1,9 @@
-from __future__ import absolute_import
-
 import django.test
+import django.template.context
 from django.template import base as template
 from django.test import TestCase
-from ..templatetags import faqtags
-from ..models import Topic
+from fack.templatetags import faqtags
+from fack.models import Topic
 
 
 class FAQTagsSyntaxTests(TestCase):
@@ -83,7 +82,7 @@ class FAQTagsNodeTests(django.test.TestCase):
     fixtures = ['faq_test_data.json']
 
     def test_faqs_for_topic_node(self):
-        context = template.Context()
+        context = django.template.context.Context()
         node = faqtags.FaqListNode(num='5', topic='"silly-questions"', varname="faqs")
         content = node.render(context)
         self.assertEqual(content, "")
@@ -95,23 +94,21 @@ class FAQTagsNodeTests(django.test.TestCase):
         """
         Test faqs_for_topic with a variable arguments.
         """
-        context = template.Context({'topic': Topic.objects.get(pk=1),
-                                    'number': 1})
+        context = django.template.context.Context({'topic': Topic.objects.get(pk=1), 'number': 1})
         node = faqtags.FaqListNode(num='number', topic='topic', varname="faqs")
         content = node.render(context)
         self.assertEqual(content, "")
         self.assertQuerysetEqual(context['faqs'], ["<Question: What is your favorite color?>"])
 
     def test_faqs_for_topic_node_invalid_variables(self):
-        context = template.Context()
+        context = django.template.context.Context()
         node = faqtags.FaqListNode(num='number', topic='topic', varname="faqs")
         content = node.render(context)
         self.assertEqual(content, "")
-        self.assert_("faqs" not in context,
-                     "faqs variable shouldn't have been added to the context.")
+        self.assertTrue("faqs" not in context, "faqs variable shouldn't have been added to the context.")
 
     def test_faq_list_node(self):
-        context = template.Context()
+        context = django.template.context.Context()
         node = faqtags.FaqListNode(num='5', varname="faqs")
         content = node.render(context)
         self.assertEqual(content, "")
@@ -124,26 +121,23 @@ class FAQTagsNodeTests(django.test.TestCase):
         """
         Test faqs_for_topic with a variable arguments.
         """
-        context = template.Context({'topic': Topic.objects.get(pk=1),
-                                    'number': 1})
+        context = django.template.context.Context({'topic': Topic.objects.get(pk=1), 'number': 1})
         node = faqtags.FaqListNode(num='number', varname="faqs")
         content = node.render(context)
         self.assertEqual(content, "")
         self.assertQuerysetEqual(context['faqs'], ["<Question: What is your favorite color?>"])
 
     def test_faq_list_node_invalid_variables(self):
-        context = template.Context()
+        context = django.template.context.Context()
         node = faqtags.FaqListNode(num='number', varname="faqs")
         content = node.render(context)
         self.assertEqual(content, "")
-        self.assert_("faqs" not in context,
-                     "faqs variable shouldn't have been added to the context.")
+        self.assertTrue("faqs" not in context, "faqs variable shouldn't have been added to the context.")
 
     def test_faq_topic_list(self):
-        context = template.Context()
+        context = django.template.context.Context()
         node = faqtags.TopicListNode(varname="topic_list")
         content = node.render(context)
         self.assertEqual(content, "")
-        self.assert_("topic_list" in context, "topic_list should be in context")
+        self.assertTrue("topic_list" in context, "topic_list should be in context")
         self.assertEqual(len(context['topic_list']), 2)
-
